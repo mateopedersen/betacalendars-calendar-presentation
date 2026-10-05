@@ -7,7 +7,10 @@ use BetaCalendars\CalendarPresentation\WeekStart;
 
 final readonly class BlankCalendar
 {
-    /** @param list<list<BlankCell>> $rows @param list<string> $weekdayLabels */
+    /**
+     * @param list<list<BlankCell>> $rows
+     * @param list<string> $weekdayLabels
+     */
     public function __construct(
         public int $rowCount,
         public int $columnCount,

@@ -7,7 +7,10 @@ use BetaCalendars\CalendarPresentation\WeekStart;
 
 final readonly class MonthView
 {
-    /** @param list<array{label: string, short: string, narrow: string}> $weekdayHeaders @param list<WeekView> $weeks */
+    /**
+     * @param list<array{label: string, short: string, narrow: string}> $weekdayHeaders
+     * @param list<WeekView> $weeks
+     */
     public function __construct(
         public string $month,
         public int $year,
