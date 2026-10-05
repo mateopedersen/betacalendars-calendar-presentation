@@ -17,8 +17,10 @@ final readonly class MonthNavigation
         if ($minimum !== null && $maximum !== null && $minimum->iso() > $maximum->iso()) {
             throw new \InvalidArgumentException('Minimum month must not be after maximum month.');
         }
-        if (($minimum !== null && $current->iso() < $minimum->iso())
-            || ($maximum !== null && $current->iso() > $maximum->iso())) {
+        if (
+            ($minimum !== null && $current->iso() < $minimum->iso())
+            || ($maximum !== null && $current->iso() > $maximum->iso())
+        ) {
             throw new \InvalidArgumentException('Current month must be inside the configured navigation range.');
         }
         return new self($current, $minimum, $maximum);
