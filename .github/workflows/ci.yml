@@ -45,3 +45,23 @@ jobs:
           tools: composer:v2
       - run: composer update --prefer-lowest --prefer-stable --no-progress
       - run: composer test
+
+  package-install-smoke:
+    name: Install published package from Packagist
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+      - name: Create a clean consumer project
+        run: |
+          mkdir -p "$RUNNER_TEMP/calendar-consumer"
+          cd "$RUNNER_TEMP/calendar-consumer"
+          printf '%s\n' '{"name":"betacalendars/calendar-consumer-smoke","require":{"betacalendars/calendar-presentation":"^0.1"}}' > composer.json
+          composer install --no-dev --no-interaction --prefer-dist --no-progress
+      - name: Verify the installed package API
+        run: |
+          cd "$RUNNER_TEMP/calendar-consumer"
+          php -r 'require "vendor/autoload.php"; $view = (new BetaCalendars\CalendarPresentation\Presentation\MonthViewFactory())->create(BetaCalendars\CalendarPresentation\YearMonth::of(2027, 1)); if ($view->label !== "January 2027" || count($view->weeks) < 4) { fwrite(STDERR, "Unexpected calendar view from Packagist install.\n"); exit(1); }'
