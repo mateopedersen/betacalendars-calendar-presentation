@@ -25,18 +25,12 @@ jobs:
           coverage: none
           tools: composer:v2
       - run: composer install --no-interaction --prefer-dist --no-progress
-      - run: php tests/update-snapshots.php
       - run: composer validate --strict
       - run: composer dump-autoload --optimize --strict-psr
       - run: composer test
       - run: composer analyse
       - run: composer cs
       - run: composer audit
-      - uses: actions/upload-artifact@v6
-        if: matrix.php == '8.3' && always()
-        with:
-          name: package-snapshots
-          path: tests/snapshots/
 
   lowest-dependencies:
     name: Lowest supported dependencies

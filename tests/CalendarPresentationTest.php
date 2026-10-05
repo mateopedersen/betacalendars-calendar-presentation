@@ -214,7 +214,10 @@ final class CalendarPresentationTest extends TestCase
         }
 
         $blank = (new BlankCalendarFactory())->create(rows: 6, columns: 7, weekStart: WeekStart::Monday);
-        $blankJson = json_encode($blank->toArray(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $blankJson = json_encode(
+            $blank->toArray(),
+            JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
+        );
         self::assertSame($this->snapshot('blank-6x7.json'), $blankJson . "\n");
 
         $january = $viewFactory->create(YearMonth::of(2027, 1));

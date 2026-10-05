@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-
 use BetaCalendars\CalendarPresentation\Blank\BlankCalendarFactory;
 use BetaCalendars\CalendarPresentation\Localization\CalendarLocale;
 use BetaCalendars\CalendarPresentation\Presentation\MonthViewFactory;
