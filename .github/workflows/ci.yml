@@ -25,12 +25,20 @@ jobs:
           coverage: none
           tools: composer:v2
       - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: vendor/bin/phpcbf --standard=PSR12 src tests
       - run: composer validate --strict
       - run: composer dump-autoload --optimize --strict-psr
       - run: composer test
       - run: composer analyse
       - run: composer cs
       - run: composer audit
+      - uses: actions/upload-artifact@v6
+        if: matrix.php == '8.3' && always()
+        with:
+          name: php-formatted-source
+          path: |
+            src/
+            tests/
 
   lowest-dependencies:
     name: Lowest supported dependencies
