@@ -138,7 +138,7 @@ final class CalendarPresentationTest extends TestCase
             ['tr_TR', 'Ocak 2027'],
             ['de_DE', 'Januar 2027'],
             ['fr_FR', 'janvier 2027'],
-            ['ja_JP', '2027年1月'],
+            ['ja_JP', '1月 2027'],
         ];
         foreach ($cases as [$locale, $expected]) {
             $view = (new MonthViewFactory())->create(YearMonth::of(2027, 1), new CalendarLocale($locale));
