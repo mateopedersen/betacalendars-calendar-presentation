@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace BetaCalendars\CalendarPresentation\Presentation;
@@ -20,7 +21,8 @@ final class MonthViewFactory
     public function __construct(
         private CalendarMonthFactory $calendarFactory = new CalendarMonthFactory(),
         private LocaleFormatter $formatter = new LocaleFormatter(),
-    ) {}
+    ) {
+    }
 
     public function create(
         YearMonth $month,
@@ -81,10 +83,18 @@ final class MonthViewFactory
         $sameCurrentDate = $currentDate !== null
             && $date->format('Y-m-d') === $currentDate->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d');
         $classes = ['calendar__day'];
-        if (!$isCurrentMonth) { $classes[] = 'calendar__day--outside'; }
-        if ((int) $date->format('w') === 0 || (int) $date->format('w') === 6) { $classes[] = 'calendar__day--weekend'; }
-        if ($sameCurrentDate) { $classes[] = 'calendar__day--today'; }
-        if (!$showDate && $policy === AdjacentMonthPolicy::Placeholder) { $classes[] = 'calendar__day--placeholder'; }
+        if (!$isCurrentMonth) {
+            $classes[] = 'calendar__day--outside';
+        }
+        if ((int) $date->format('w') === 0 || (int) $date->format('w') === 6) {
+            $classes[] = 'calendar__day--weekend';
+        }
+        if ($sameCurrentDate) {
+            $classes[] = 'calendar__day--today';
+        }
+        if (!$showDate && $policy === AdjacentMonthPolicy::Placeholder) {
+            $classes[] = 'calendar__day--placeholder';
+        }
 
         $visible = $showDate;
         return new DayView(
@@ -105,8 +115,16 @@ final class MonthViewFactory
 
     private function navigation(YearMonth $month): NavigationView
     {
-        try { $previous = $month->previous()->iso(); } catch (\InvalidArgumentException) { $previous = null; }
-        try { $next = $month->next()->iso(); } catch (\InvalidArgumentException) { $next = null; }
+        try {
+            $previous = $month->previous()->iso();
+        } catch (\InvalidArgumentException) {
+            $previous = null;
+        }
+        try {
+            $next = $month->next()->iso();
+        } catch (\InvalidArgumentException) {
+            $next = null;
+        }
         return new NavigationView($previous, $month->iso(), $next);
     }
 }

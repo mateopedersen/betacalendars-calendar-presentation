@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace BetaCalendars\CalendarPresentation\Model;
@@ -12,7 +13,11 @@ final readonly class CalendarDay
         public DateTimeImmutable $date,
         public GridCoordinate $coordinate,
         public MonthRelation $relation,
-    ) {}
+    ) {
+    }
 
-    public function isCurrentMonth(): bool { return $this->relation === MonthRelation::Current; }
+    public function isCurrentMonth(): bool
+    {
+        return $this->relation === MonthRelation::Current;
+    }
 }

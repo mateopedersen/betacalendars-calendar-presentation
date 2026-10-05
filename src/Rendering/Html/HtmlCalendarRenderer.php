@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace BetaCalendars\CalendarPresentation\Rendering\Html;
@@ -7,14 +8,17 @@ use BetaCalendars\CalendarPresentation\Presentation\MonthView;
 
 final class HtmlCalendarRenderer
 {
-    public function __construct(private HtmlEscaper $escaper = new HtmlEscaper()) {}
+    public function __construct(private HtmlEscaper $escaper = new HtmlEscaper())
+    {
+    }
 
     public function render(MonthView $view, HtmlRenderOptions $options = new HtmlRenderOptions()): string
     {
         $prefix = $this->escaper->escape($options->classPrefix);
         $caption = $this->escaper->escape($options->caption ?? $view->label);
         $aria = $this->escaper->escape($view->ariaLabel);
-        $html = '<table class="' . $prefix . '" aria-label="' . $aria . '"><caption class="' . $prefix . '__caption">' . $caption . '</caption>';
+        $html = '<table class="' . $prefix . '" aria-label="' . $aria . '">'
+            . '<caption class="' . $prefix . '__caption">' . $caption . '</caption>';
         $html .= '<thead><tr class="' . $prefix . '__weekdays">';
         foreach ($view->weekdayHeaders as $column => $header) {
             $id = $prefix . '-weekday-' . $column;

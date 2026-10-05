@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace BetaCalendars\CalendarPresentation;
@@ -13,8 +14,11 @@ use DateTimeZone;
 
 final class CalendarMonthFactory
 {
-    public function create(YearMonth $month, WeekStart $weekStart = WeekStart::Monday, GridMode $mode = GridMode::Natural): CalendarMonth
-    {
+    public function create(
+        YearMonth $month,
+        WeekStart $weekStart = WeekStart::Monday,
+        GridMode $mode = GridMode::Natural,
+    ): CalendarMonth {
         $first = $month->firstDate();
         $firstColumn = ((int) $first->format('w') - $weekStart->value + 7) % 7;
         $rowCount = $mode === GridMode::FixedSixWeeks
@@ -31,7 +35,11 @@ final class CalendarMonthFactory
                 $relation = $dateKey < $targetKey
                     ? MonthRelation::Previous
                     : ($dateKey > $targetKey ? MonthRelation::Next : MonthRelation::Current);
-                $days[] = new CalendarDay($date->setTimezone(new DateTimeZone('UTC')), new GridCoordinate($row, $column), $relation);
+                $days[] = new CalendarDay(
+                    $date->setTimezone(new DateTimeZone('UTC')),
+                    new GridCoordinate($row, $column),
+                    $relation,
+                );
             }
             $weeks[] = new CalendarWeek($row, $days);
         }

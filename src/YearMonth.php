@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace BetaCalendars\CalendarPresentation;
@@ -29,14 +30,22 @@ final readonly class YearMonth
         return new self((int) $matches[1], (int) $matches[2]);
     }
 
-    public function previous(): self { return $this->plusMonths(-1); }
-    public function next(): self { return $this->plusMonths(1); }
+    public function previous(): self
+    {
+        return $this->plusMonths(-1);
+    }
+    public function next(): self
+    {
+        return $this->plusMonths(1);
+    }
 
     public function plusMonths(int $months): self
     {
         $index = ($this->year - 1) * 12 + ($this->month - 1) + $months;
-        if ($months < -((($this->year - 1) * 12) + ($this->month - 1))
-            || $months > ((9999 * 12) - 1) - ((($this->year - 1) * 12) + ($this->month - 1))) {
+        if (
+            $months < -((($this->year - 1) * 12) + ($this->month - 1))
+            || $months > ((9999 * 12) - 1) - ((($this->year - 1) * 12) + ($this->month - 1))
+        ) {
             throw new InvalidArgumentException('Month arithmetic exceeded the supported year range.');
         }
         return new self(intdiv($index, 12) + 1, ($index % 12) + 1);
@@ -49,7 +58,10 @@ final readonly class YearMonth
 
     public function firstDate(): DateTimeImmutable
     {
-        return new DateTimeImmutable(sprintf('%04d-%02d-01 00:00:00', $this->year, $this->month), new DateTimeZone('UTC'));
+        return new DateTimeImmutable(
+            sprintf('%04d-%02d-01 00:00:00', $this->year, $this->month),
+            new DateTimeZone('UTC'),
+        );
     }
 
     public function lastDate(): DateTimeImmutable
@@ -57,5 +69,8 @@ final readonly class YearMonth
         return $this->firstDate()->modify('last day of this month');
     }
 
-    public function iso(): string { return sprintf('%04d-%02d', $this->year, $this->month); }
+    public function iso(): string
+    {
+        return sprintf('%04d-%02d', $this->year, $this->month);
+    }
 }

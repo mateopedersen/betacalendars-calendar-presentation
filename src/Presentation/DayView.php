@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace BetaCalendars\CalendarPresentation\Presentation;
@@ -21,9 +22,13 @@ final readonly class DayView
         public ?string $shortWeekdayLabel,
         public ?string $ariaLabel,
         public array $cssTokens,
-    ) {}
+    ) {
+    }
 
-    public function isCurrentMonth(): bool { return $this->relation === MonthRelation::Current; }
+    public function isCurrentMonth(): bool
+    {
+        return $this->relation === MonthRelation::Current;
+    }
 
     /** @return array<string, mixed> */
     public function toArray(): array

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace BetaCalendars\CalendarPresentation\Presentation;
@@ -23,9 +24,13 @@ final readonly class MonthView
         public array $weeks,
         public NavigationView $navigation,
         public string $ariaLabel,
-    ) {}
+    ) {
+    }
 
-    public function rowCount(): int { return count($this->weeks); }
+    public function rowCount(): int
+    {
+        return count($this->weeks);
+    }
 
     /** @return array<string, mixed> */
     public function toArray(): array

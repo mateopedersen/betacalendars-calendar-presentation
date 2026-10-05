@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace BetaCalendars\CalendarPresentation\Blank;
@@ -11,7 +12,9 @@ use DateTimeZone;
 
 final class BlankCalendarFactory
 {
-    public function __construct(private LocaleFormatter $formatter = new LocaleFormatter()) {}
+    public function __construct(private LocaleFormatter $formatter = new LocaleFormatter())
+    {
+    }
 
     public function create(
         int $rows = 6,
@@ -27,7 +30,9 @@ final class BlankCalendarFactory
         $grid = [];
         for ($row = 0; $row < $rows; $row++) {
             $cells = [];
-            for ($column = 0; $column < $columns; $column++) { $cells[] = new BlankCell($row, $column); }
+            for ($column = 0; $column < $columns; $column++) {
+                $cells[] = new BlankCell($row, $column);
+            }
             $grid[] = $cells;
         }
         $labels = [];

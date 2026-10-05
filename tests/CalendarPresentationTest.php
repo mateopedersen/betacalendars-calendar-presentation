@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace BetaCalendars\CalendarPresentation\Tests;
@@ -66,7 +67,9 @@ final class CalendarPresentationTest extends TestCase
             $currentDays = [];
             foreach ($model->weeks as $week) {
                 foreach ($week->days as $day) {
-                    if ($day->relation === MonthRelation::Current) { $currentDays[] = $day->date->format('j'); }
+                    if ($day->relation === MonthRelation::Current) {
+                        $currentDays[] = $day->date->format('j');
+                    }
                 }
             }
             self::assertSame(range(1, $days), array_map('intval', $currentDays));
@@ -159,7 +162,8 @@ final class CalendarPresentationTest extends TestCase
     public function testHtmlIsSemanticEscapedAndContainsNoExecutableAssets(): void
     {
         $view = (new MonthViewFactory())->create(YearMonth::of(2027, 1));
-        $html = (new HtmlCalendarRenderer())->render($view, new HtmlRenderOptions('<script>alert("x")</script> & "', 'my-calendar'));
+        $options = new HtmlRenderOptions('<script>alert("x")</script> & "', 'my-calendar');
+        $html = (new HtmlCalendarRenderer())->render($view, $options);
         self::assertStringContainsString('&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; &amp; &quot;', $html);
         self::assertStringContainsString('<caption', $html);
         self::assertStringContainsString('<th id="my-calendar-weekday-0" scope="col"', $html);
@@ -193,7 +197,9 @@ final class CalendarPresentationTest extends TestCase
         self::assertCount(7, $blank->weekdayLabels);
         $coordinates = [];
         foreach ($blank->rows as $row) {
-            foreach ($row as $cell) { $coordinates[] = $cell->row . ':' . $cell->column; }
+            foreach ($row as $cell) {
+                $coordinates[] = $cell->row . ':' . $cell->column;
+            }
         }
         self::assertCount(42, array_unique($coordinates));
         self::assertArrayNotHasKey('date', $blank->toArray());
@@ -227,14 +233,17 @@ final class CalendarPresentationTest extends TestCase
                 $model = $factory->create($monthValue, WeekStart::Monday);
                 $fixed = $factory->create($monthValue, WeekStart::Monday, GridMode::FixedSixWeeks);
                 self::assertCount(6, $fixed->weeks);
-                self::assertCount(42, array_merge(...array_map(static fn ($week): array => $week->days, $fixed->weeks)));
+                $fixedDays = array_merge(...array_map(static fn ($week): array => $week->days, $fixed->weeks));
+                self::assertCount(42, $fixedDays);
                 $dates = [];
                 foreach ($model->weeks as $row => $week) {
                     self::assertCount(7, $week->days);
                     foreach ($week->days as $column => $day) {
                         self::assertSame($row, $day->coordinate->row);
                         self::assertSame($column, $day->coordinate->column);
-                        if ($day->isCurrentMonth()) { $dates[] = $day->date->format('Y-m-d'); }
+                        if ($day->isCurrentMonth()) {
+                            $dates[] = $day->date->format('Y-m-d');
+                        }
                     }
                 }
                 self::assertCount($monthValue->daysInMonth(), $dates);
