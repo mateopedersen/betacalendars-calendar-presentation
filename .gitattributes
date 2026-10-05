@@ -1,0 +1,5 @@
+* text=auto
+/.github export-ignore
+/tests export-ignore
+/phpstan.neon export-ignore
+/.phpcs.xml export-ignore
