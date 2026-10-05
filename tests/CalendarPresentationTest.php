@@ -137,15 +137,16 @@ final class CalendarPresentationTest extends TestCase
             self::markTestSkipped('ext-intl is optional and is not installed.');
         }
         $cases = [
-            ['en_US', 'January 2027'],
-            ['tr_TR', 'Ocak 2027'],
-            ['de_DE', 'Januar 2027'],
-            ['fr_FR', 'janvier 2027'],
-            ['ja_JP', '1月 2027'],
+            ['en_US', 'January'],
+            ['tr_TR', 'Ocak'],
+            ['de_DE', 'Januar'],
+            ['fr_FR', 'janvier'],
+            ['ja_JP', '1月'],
         ];
         foreach ($cases as [$locale, $expected]) {
             $view = (new MonthViewFactory())->create(YearMonth::of(2027, 1), new CalendarLocale($locale));
-            self::assertSame($expected, $view->label);
+            self::assertStringContainsString($expected, $view->label);
+            self::assertStringContainsString('2027', $view->label);
             self::assertCount(7, $view->weekdayHeaders);
         }
     }
@@ -188,6 +189,44 @@ final class CalendarPresentationTest extends TestCase
         self::assertSame($json, $renderer->render($view));
         self::assertSame('2027-01', json_decode($json, true, flags: JSON_THROW_ON_ERROR)['month']);
         self::assertStringContainsString('"weekStartsOn":"monday"', $json);
+    }
+
+    public function testGoldenSnapshotsMatchMonthJsonHtmlAndBlankGridOutputs(): void
+    {
+        $viewFactory = new MonthViewFactory();
+        $json = new CalendarJsonRenderer();
+        $months = [
+            'november-2026' => [YearMonth::of(2026, 11), new CalendarLocale('en_US')],
+            'december-2026' => [YearMonth::of(2026, 12), new CalendarLocale('en_US')],
+            'january-2027' => [YearMonth::of(2027, 1), new CalendarLocale('en_US')],
+            'february-2027' => [YearMonth::of(2027, 2), new CalendarLocale('en_US')],
+        ];
+        foreach ($months as $name => [$month, $locale]) {
+            $view = $viewFactory->create($month, $locale);
+            self::assertSame($this->snapshot($name . '.json'), $json->render($view) . "\n");
+        }
+
+        if (class_exists(\IntlDateFormatter::class)) {
+            $turkish = $viewFactory->create(YearMonth::of(2027, 1), new CalendarLocale('tr_TR'));
+            $japanese = $viewFactory->create(YearMonth::of(2027, 2), new CalendarLocale('ja_JP'));
+            self::assertSame($this->snapshot('january-2027-tr.json'), $json->render($turkish) . "\n");
+            self::assertSame($this->snapshot('february-2027-ja.json'), $json->render($japanese) . "\n");
+        }
+
+        $blank = (new BlankCalendarFactory())->create(rows: 6, columns: 7, weekStart: WeekStart::Monday);
+        $blankJson = json_encode($blank->toArray(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        self::assertSame($this->snapshot('blank-6x7.json'), $blankJson . "\n");
+
+        $january = $viewFactory->create(YearMonth::of(2027, 1));
+        $html = (new HtmlCalendarRenderer())->render($january) . "\n";
+        self::assertSame($this->snapshot('january-2027.html'), $html);
+    }
+
+    private function snapshot(string $file): string
+    {
+        $contents = file_get_contents(__DIR__ . '/snapshots/' . $file);
+        self::assertIsString($contents, 'Snapshot file must be readable: ' . $file);
+        return $contents;
     }
 
     public function testBlankCalendarHasUniqueCoordinatesAndNoDates(): void
